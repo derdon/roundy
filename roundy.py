@@ -6,14 +6,10 @@ from aml import Scanner, Parser as AMLParser, Node
 
 
 class HTMLNode(Node):
-    def __init__(self,
-                 name,
-                 attributes=None,
-                 text_attribute='text',
-                 children=()):
+    def __init__(self, name, attributes=None, text_attr='text', children=()):
         self.name = name
         self.attributes = attributes or {}
-        self.text_attribute = text_attribute
+        self.text_attr = text_attr
         self.children = []
         self.parent = self.first_child = self.last_child = None
         self.next_sibling = self.previous_sibling = None
@@ -27,7 +23,7 @@ class HTMLNode(Node):
     @property
     def text(self):
         attributes = self.attributes.iteritems()
-        texts = [v for k, v in attributes if k == self.text_attribute]
+        texts = [v for k, v in attributes if k == self.text_attr]
         assert len(texts) in (0, 1)
         try:
             text = texts[0]
@@ -40,7 +36,7 @@ class HTMLNode(Node):
         attributes = self.attributes.iteritems()
         formatted_attributes = ' '.join(
             '{0}="{1}"'.format(key, value)
-            for key, value in attributes if key != self.text_attribute
+            for key, value in attributes if key != self.text_attr
         )
         if formatted_attributes:
             formatted_attributes = ' ' + formatted_attributes
