@@ -6,15 +6,9 @@ from aml import Scanner, Parser as AMLParser, Node
 
 
 class HTMLNode(Node):
-    def __init__(self, name, attributes=None, text_attr='text', children=()):
-        self.name = name
-        self.attributes = attributes or {}
+    def __init__(self, name, attributes=None, children=(), text_attr='text'):
+        Node.__init__(self, name, attributes, children)
         self.text_attr = text_attr
-        self.children = []
-        self.parent = self.first_child = self.last_child = None
-        self.next_sibling = self.previous_sibling = None
-        for child in children:
-            self.append(child)
 
     def __str__(self):
         str_children = ' '.join(imap(str, self.children))
