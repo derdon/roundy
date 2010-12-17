@@ -7,7 +7,7 @@ import codecs
 if sys.version_info.major == 2 and sys.version_info.minor >=6:
     from future_builtins import map
 
-from aml import Scanner, Parser as AMLParser, Node
+from aml import Scanner, Parser as AMLParser, Node, parse_string
 
 
 class HTMLNode(Node):
@@ -46,13 +46,9 @@ class HTMLNode(Node):
         return '</{0}>'.format(self.name)
 
 
-def parse_string(src):
-    return AMLParser(Scanner(src), HTMLNode).parse()
-
-
 def parse_file(name, encoding='utf-8'):
     with codecs.open(name, 'r', encoding) as f:
-        return parse_string(f.read().encode(encoding))
+        return parse_string(f.read(), HTMLNode)
 
 
 def main(argv=None, stdin=sys.stdin):
