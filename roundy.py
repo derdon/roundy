@@ -34,16 +34,15 @@ class HTMLNode(Node):
     def start_tag(self):
         attributes = list(self.attributes.items())
         formatted_attributes = ' '.join(
-            '{0}="{1}"'.format(key, value)
-            for key, value in attributes if key != self.text_attr
+            '{}="{}"'.format(k, v) for k, v in attributes if k != self.text_attr
         )
         if formatted_attributes:
             formatted_attributes = ' ' + formatted_attributes
-        return '<{0}{1}>'.format(self.name, formatted_attributes)
+        return '<{}{}>'.format(self.name, formatted_attributes)
 
     @property
     def end_tag(self):
-        return '</{0}>'.format(self.name)
+        return '</{}>'.format(self.name)
 
 
 def main(argv=None, stdin=sys.stdin):
