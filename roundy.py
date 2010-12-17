@@ -1,6 +1,11 @@
+from __future__ import print_function
+
 import sys
 import codecs
-from itertools import imap
+# this import is only senseful for python version 2.x and is only supported
+# since 2.6
+if sys.version_info.major == 2 and sys.version_info.minor >=6:
+    from future_builtins import map
 
 from aml import Scanner, Parser as AMLParser, Node
 
@@ -11,12 +16,12 @@ class HTMLNode(Node):
         self.text_attr = text_attr
 
     def __str__(self):
-        str_children = ' '.join(imap(str, self.children))
+        str_children = ' '.join(map(str, self.children))
         return ''.join([self.start_tag, self.text, str_children, self.end_tag])
 
     @property
     def text(self):
-        attributes = self.attributes.iteritems()
+        attributes = list(self.attributes.items())
         texts = [v for k, v in attributes if k == self.text_attr]
         assert len(texts) in (0, 1)
         try:
@@ -27,7 +32,7 @@ class HTMLNode(Node):
 
     @property
     def start_tag(self):
-        attributes = self.attributes.iteritems()
+        attributes = list(self.attributes.items())
         formatted_attributes = ' '.join(
             '{0}="{1}"'.format(key, value)
             for key, value in attributes if key != self.text_attr
@@ -62,4 +67,4 @@ def main(argv=None, stdin=sys.stdin):
 
 
 if __name__ == '__main__':
-    print main()
+    print(main())
