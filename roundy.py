@@ -41,11 +41,11 @@ class HTMLNode(Node):
 
 
 def parse_string(src):
-    return parse_aml_string(input, HTMLNode)
+    return parse_aml_string(src, HTMLNode)
 
 
-def parse_file(name):
-    return parse_file(filename, NodeClass=HTMLNode)
+def parse_file(filename):
+    return parse_aml_file(filename, NodeClass=HTMLNode)
 
 
 def main(argv=None, stdin=sys.stdin):
