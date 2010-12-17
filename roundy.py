@@ -49,6 +49,5 @@ def main(argv=None, stdin=sys.stdin):
         input = sys.stdin.read()
         return parse_string(input, HTMLNode)
 
-
 if __name__ == '__main__':
     print(main())
