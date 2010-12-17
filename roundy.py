@@ -23,11 +23,7 @@ class HTMLNode(Node):
         attributes = list(self.attributes.items())
         texts = [v for k, v in attributes if k == self.text_attr]
         assert len(texts) in (0, 1)
-        try:
-            text = texts[0]
-        except IndexError:
-            text = ''
-        return text
+        return texts[0] if texts else ''
 
     @property
     def start_tag(self):
