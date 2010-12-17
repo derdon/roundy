@@ -46,7 +46,7 @@ def main(argv=None, stdin=sys.stdin):
         filename = argv[1]
         return parse_file(filename, NodeClass=HTMLNode)
     except IndexError:
-        input = sys.stdin.read()
+        input = stdin.read()
         return parse_string(input, HTMLNode)
 
 if __name__ == '__main__':
