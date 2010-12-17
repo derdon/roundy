@@ -6,7 +6,8 @@ import sys
 if sys.version_info.major == 2 and sys.version_info.minor >= 6:
     from future_builtins import map
 
-from aml import Node, parse_string, parse_file
+from aml import (Node, parse_string as parse_aml_string,
+    parse_file as parse_aml_file)
 
 
 class HTMLNode(Node):
@@ -39,15 +40,22 @@ class HTMLNode(Node):
         return '</{}>'.format(self.name)
 
 
+def parse_string(src):
+    return parse_aml_string(input, HTMLNode)
+
+
+def parse_file(name):
+    return parse_file(filename, NodeClass=HTMLNode)
+
+
 def main(argv=None, stdin=sys.stdin):
     if not argv:
         argv = sys.argv
     try:
         filename = argv[1]
-        return parse_file(filename, NodeClass=HTMLNode)
+        return parse_file(filename)
     except IndexError:
-        input = stdin.read()
-        return parse_string(input, HTMLNode)
+        return parse_string(stdin.read())
 
 if __name__ == '__main__':
     print(main())
