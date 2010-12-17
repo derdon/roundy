@@ -1,13 +1,12 @@
 from __future__ import print_function
 
 import sys
-import codecs
 # this import is only senseful for python version 2.x and is only supported
 # since 2.6
 if sys.version_info.major == 2 and sys.version_info.minor >= 6:
     from future_builtins import map
 
-from aml import Scanner, Parser as AMLParser, Node, parse_string, parse_file
+from aml import Node, parse_string, parse_file
 
 
 class HTMLNode(Node):
