@@ -4,7 +4,7 @@ import sys
 import codecs
 # this import is only senseful for python version 2.x and is only supported
 # since 2.6
-if sys.version_info.major == 2 and sys.version_info.minor >=6:
+if sys.version_info.major == 2 and sys.version_info.minor >= 6:
     from future_builtins import map
 
 from aml import Scanner, Parser as AMLParser, Node, parse_string, parse_file
@@ -32,10 +32,9 @@ class HTMLNode(Node):
 
     @property
     def start_tag(self):
-        attributes = list(self.attributes.items())
+        attrs = list(self.attributes.items())
         formatted_attributes = ' '.join(
-            '{}="{}"'.format(k, v) for k, v in attributes if k != self.text_attr
-        )
+            '{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
         if formatted_attributes:
             formatted_attributes = ' ' + formatted_attributes
         return '<{}{}>'.format(self.name, formatted_attributes)
