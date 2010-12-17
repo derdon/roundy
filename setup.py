@@ -15,6 +15,7 @@ setup(
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
+        'Programming Language :: Python :: 2.7',
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Markup'],
 )
