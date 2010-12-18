@@ -118,4 +118,4 @@ def main(argv=None, stdin=sys.stdin):
         return parse_string(stdin.read())
 
 if __name__ == '__main__':
-    print(main())
+    print(main() or '', end='')
