@@ -48,6 +48,34 @@ def parse_file(filename):
     return parse_aml_file(filename, NodeClass=HTMLNode)
 
 
+def pprint_format(node):
+    start_nodes = []
+    end_nodes = []
+    texts = []
+
+    def inner(node):
+        start_nodes.append(node.start_tag)
+        end_nodes.append(node.end_tag)
+        texts.append(node.text)
+        for node in node.children:
+            inner(node)
+    inner(node)
+    return start_nodes, texts, end_nodes
+
+
+def pprint(node, indent=4):
+    start_tags, texts, end_tags = pprint_format(node)
+    for (i, tag), text in zip(enumerate(start_tags), texts):
+        base_indentation = ' ' * indent
+        indentation = base_indentation * i
+        print(indentation + tag)
+        if text:
+            print(indentation + base_indentation + text)
+    for i, tag in reversed(list(enumerate(end_tags))):
+        indentation = (' ' * indent) * i
+        print(indentation + tag)
+
+
 def main(argv=None, stdin=sys.stdin):
     if not argv:
         argv = sys.argv
