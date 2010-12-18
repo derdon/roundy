@@ -95,7 +95,8 @@ def pprint(node, indent=4):
             yield indentation + base_indentation + text
     for i, tag in reversed(list(enumerate(end_tags))):
         indentation = (' ' * indent) * i
-        yield indentation + tag
+        if tag:
+            yield indentation + tag
 
 
 def parse_args(argv):
