@@ -106,9 +106,14 @@ def main(argv=None, stdin=sys.stdin):
     if args.filename:
         nodes = parse_file(args.filename)
         if args.pretty:
-            return '\n'.join(pprint(nodes, args.indent))
+            output = '\n'.join(pprint(nodes, args.indent))
         else:
-            return nodes
+            output = nodes
+        if args.outputfile:
+            with open(args.outputfile, 'w') as f:
+                f.write(str(output))
+        else:
+            return output
     else:
         return parse_string(stdin.read())
 
