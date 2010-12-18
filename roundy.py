@@ -11,6 +11,20 @@ import argparse
 from aml import (Node, parse_string as parse_aml_string,
     parse_file as parse_aml_file)
 
+STANDALONE_TAGS = frozenset((
+    'AREA',
+    'BASE',
+    'BASEFONT',
+    'BR',
+    'COL',
+    'FRAME',
+    'HR',
+    'IMG',
+    'INPUT',
+    'ISINDEX',
+    'LINK',
+    'META',
+    'PARAM'))
 
 class HTMLNode(Node):
     def __init__(self, name, attributes=None, children=(), text_attr='text'):
@@ -20,6 +34,10 @@ class HTMLNode(Node):
     def __str__(self):
         str_children = ' '.join(map(str, self.children))
         return ''.join([self.start_tag, self.text, str_children, self.end_tag])
+
+    @property
+    def is_standalone_tag(self):
+        return self.name.upper() in STANDALONE_TAGS
 
     @property
     def text(self):
@@ -35,11 +53,14 @@ class HTMLNode(Node):
             '{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
         if formatted_attributes:
             formatted_attributes = ' ' + formatted_attributes
-        return '<{}{}>'.format(self.name, formatted_attributes)
+        return '<{}{}{}>'.format(
+            self.name,
+            formatted_attributes,
+            ' /' if self.is_standalone_tag else '')
 
     @property
     def end_tag(self):
-        return '</{}>'.format(self.name)
+        return '' if self.is_standalone_tag else '</{}>'.format(self.name)
 
 
 def parse_string(src):
