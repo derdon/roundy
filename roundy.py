@@ -88,7 +88,7 @@ def parse_args(argv):
         '-p', '--pretty', action='store_true',
         help='Enable pretty printing of the HTML output')
     parser.add_argument(
-        '-i', '--indent', type=int, default=4,
+        '-i', '--indent', type=int, default=4, choices=xrange(sys.maxsize),
         help=(
             'The number of spaces to use for indenting the output (only used '
             'in combination with the option -p --pretty). '
