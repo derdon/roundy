@@ -5,4 +5,7 @@
             (text "the header"))
 	(img
 	    (src "images/icon.gif")
-	    (alt "an icon which you can't see!"))))
+	    (alt "an icon which you can't see!"))
+	(p
+	    (text "Here is some < text with > and /> ."))
+	))

@@ -6,6 +6,7 @@ import sys
 if sys.version_info.major == 2 and sys.version_info.minor >= 6:
     from future_builtins import map
 
+import cgi
 import argparse
 import itertools
 
@@ -55,7 +56,7 @@ class HTMLNode(Node):
         attributes = list(self.attributes.items())
         texts = [v for k, v in attributes if k == self.text_attr]
         assert len(texts) in (0, 1)
-        return texts[0] if texts else ''
+        return cgi.escape(texts[0]) if texts else ''
 
     @property
     def start_tag(self):
