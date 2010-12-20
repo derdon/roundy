@@ -7,6 +7,7 @@ if sys.version_info.major == 2 and sys.version_info.minor >= 6:
     from future_builtins import map
 
 import argparse
+import itertools
 
 from aml import (Node, parse_string as parse_aml_string,
     parse_file as parse_aml_file)
@@ -26,6 +27,7 @@ STANDALONE_TAGS = frozenset((
     'META',
     'PARAM'))
 
+
 class HTMLNode(Node):
     def __init__(self, name, attributes=None, children=(), text_attr='text'):
         Node.__init__(self, name, attributes, children)
@@ -40,6 +42,15 @@ class HTMLNode(Node):
         return self.name.upper() in STANDALONE_TAGS
 
     @property
+    def formatted_attributes(self):
+        attrs = list(self.attributes.items())
+        formatted_attributes = ' '.join(
+            '{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
+        if formatted_attributes:
+            formatted_attributes = ' ' + formatted_attributes
+        return formatted_attributes
+
+    @property
     def text(self):
         attributes = list(self.attributes.items())
         texts = [v for k, v in attributes if k == self.text_attr]
@@ -48,19 +59,17 @@ class HTMLNode(Node):
 
     @property
     def start_tag(self):
-        attrs = list(self.attributes.items())
-        formatted_attributes = ' '.join(
-            '{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
-        if formatted_attributes:
-            formatted_attributes = ' ' + formatted_attributes
-        return '<{}{}{}>'.format(
-            self.name,
-            formatted_attributes,
-            ' /' if self.is_standalone_tag else '')
+        if self.is_standalone_tag:
+            return ''
+        else:
+            return '<{}{}>'.format(self.name, self.formatted_attributes)
 
     @property
     def end_tag(self):
-        return '' if self.is_standalone_tag else '</{}>'.format(self.name)
+        if self.is_standalone_tag:
+            return '<{}{} />'.format(self.name, self.formatted_attributes)
+        else:
+            return '</{}>'.format(self.name)
 
 
 def parse_string(src):
@@ -71,32 +80,61 @@ def parse_file(filename):
     return parse_aml_file(filename, NodeClass=HTMLNode)
 
 
+def tokenize(nodes):
+    if nodes.start_tag:
+        yield nodes.start_tag
+    for node in nodes:
+        for n in tokenize(node):
+            yield n
+    if nodes.text:
+        yield nodes.text
+    yield nodes.end_tag
+
+
+def guess_token_type(token):
+    if token.startswith('<'):
+        if token.startswith('</') and token.endswith('>'):
+            return 'end'
+        elif token.endswith('/>'):
+            return 'standalone'
+        elif token.endswith('>'):
+            return 'start'
+        else:
+            raise SyntaxError
+    else:
+        return 'text'
+
+
 def pprint(node, indent=4):
-
-    def pprint_format(node):
-        start_nodes = []
-        end_nodes = []
-        texts = []
-
-        def inner(node):
-            start_nodes.append(node.start_tag)
-            end_nodes.append(node.end_tag)
-            texts.append(node.text)
-            for node in node.children:
-                inner(node)
-        inner(node)
-        return start_nodes, texts, end_nodes
-    start_tags, texts, end_tags = pprint_format(node)
-    for (i, tag), text in zip(enumerate(start_tags), texts):
+    depth = 0
+    tokens, copy_of_tokens = itertools.tee(tokenize(node))
+    copy_of_tokens = list(copy_of_tokens)
+    for line, token in enumerate(tokens):
         base_indentation = ' ' * indent
-        indentation = base_indentation * i
-        yield indentation + tag
-        if text:
-            yield indentation + base_indentation + text
-    for i, tag in reversed(list(enumerate(end_tags))):
-        indentation = (' ' * indent) * i
-        if tag:
-            yield indentation + tag
+        indentation = base_indentation * depth
+        tok_type = guess_token_type(token)
+        assert tok_type in ('start', 'text', 'standalone', 'end')
+        if tok_type == 'start':
+            depth += 1
+            yield indentation + token
+        elif tok_type == 'text':
+            depth -= 1
+            yield indentation + token
+        elif tok_type in ('standalone', 'end'):
+            # look at the following token and check if it is an end tag. If it
+            # is, the next line has to be outdented
+            try:
+                next_token = copy_of_tokens[line + 1]
+            except IndexError:
+                # this end tag is already the last token in the list, so there
+                # is no next token
+                next_token = ''
+            next_tok_type = guess_token_type(next_token)
+            if next_tok_type == 'end':
+                depth -= 1
+            yield indentation + token
+    # depth should be 0 again, as before the iteration
+    assert depth == 0
 
 
 def parse_args(argv):
