@@ -7,4 +7,6 @@
 	    (src "images/icon.gif")
 	    (alt "an icon which you can't see!"))
 	(p
-	    (text "Here is some text with < and > and />."))))
+	    (text "Here is some text with < and > and />."))
+	(p
+	    (id "foo"))))

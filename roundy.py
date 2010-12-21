@@ -118,8 +118,18 @@ def pprint(node, indent=4):
         indentation = base_indentation * depth
         tok_type = guess_token_type(token)
         assert tok_type in ('start', 'text', 'standalone', 'end')
+        try:
+            next_token = copy_of_tokens[line + 1]
+        except IndexError:
+            # this tag is already the last token in the list, so there
+            # is no next token
+            next_token = ''
+        next_tok_type = guess_token_type(next_token)
+        assert next_tok_type in ('start', 'text', 'standalone', 'end')
         if tok_type == 'start':
-            depth += 1
+            # only indent if the next line is a text
+            if next_tok_type != 'end':
+                depth += 1
             yield indentation + token
         elif tok_type == 'text':
             depth -= 1
@@ -127,13 +137,6 @@ def pprint(node, indent=4):
         elif tok_type in ('standalone', 'end'):
             # look at the following token and check if it is an end tag. If it
             # is, the next line has to be outdented
-            try:
-                next_token = copy_of_tokens[line + 1]
-            except IndexError:
-                # this end tag is already the last token in the list, so there
-                # is no next token
-                next_token = ''
-            next_tok_type = guess_token_type(next_token)
             if next_tok_type == 'end':
                 depth -= 1
             yield indentation + token
