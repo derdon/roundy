@@ -127,7 +127,7 @@ def pprint(node, indent=4):
         next_tok_type = guess_token_type(next_token)
         assert next_tok_type in ('start', 'text', 'standalone', 'end')
         if tok_type == 'start':
-            # only indent if the next line is a text
+            # only indent if the next line is not an end tag
             if next_tok_type != 'end':
                 depth += 1
             yield indentation + token
