@@ -9,6 +9,7 @@ if sys.version_info.major == 2 and sys.version_info.minor >= 6:
 import cgi
 import argparse
 import itertools
+from functools import partial
 
 from aml import (Node, parse_string as parse_aml_string,
     parse_file as parse_aml_file)
@@ -73,12 +74,14 @@ class HTMLNode(Node):
             return '</{}>'.format(self.name)
 
 
-def parse_string(src):
-    return parse_aml_string(src, HTMLNode)
+def parse_string(src, text_attribute='text'):
+    return parse_aml_string(src, partial(HTMLNode, text_attr=text_attribute))
 
 
-def parse_file(filename):
-    return parse_aml_file(filename, NodeClass=HTMLNode)
+def parse_file(filename, text_attribute='text'):
+    return parse_aml_file(
+        filename,
+        NodeClass=partial(HTMLNode, text_attr=text_attribute))
 
 
 def tokenize(nodes):
@@ -146,6 +149,9 @@ def parse_args(argv):
     parser.add_argument(
         'filename', help='path to the file which has to be parsed.')
     parser.add_argument(
+        '-t', '--text-attribute', default='text',
+        help='the name of the attribute to use for marking text')
+    parser.add_argument(
         '-p', '--pretty', action='store_true',
         help='Enable pretty printing of the HTML output')
     parser.add_argument(
@@ -165,7 +171,7 @@ def main(argv=None, stdin=sys.stdin):
         argv = sys.argv[1:]
     args = parse_args(argv)
     if args.filename:
-        nodes = parse_file(args.filename)
+        nodes = parse_file(args.filename, args.text_attribute)
         if args.pretty:
             output = '\n'.join(pprint(nodes, args.indent))
         else:
@@ -176,7 +182,7 @@ def main(argv=None, stdin=sys.stdin):
         else:
             return output
     else:
-        return parse_string(stdin.read())
+        return parse_string(stdin.read(), args.text_attribute)
 
 if __name__ == '__main__':
     print(main() or '', end='')
