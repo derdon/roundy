@@ -142,6 +142,13 @@ def pprint(node, indent=4):
 
 
 def parse_args(argv):
+    default_indent = 2
+
+    def indent_int(string):
+        value = int(string)
+        if value < 0:
+            value = default_indent
+        return value
     parser = argparse.ArgumentParser(
         description=(
             'Convert a lisp-like file into HTML and'
@@ -155,11 +162,12 @@ def parse_args(argv):
         '-p', '--pretty', action='store_true',
         help='Enable pretty printing of the HTML output')
     parser.add_argument(
-        '-i', '--indent', type=int, default=4, choices=xrange(9),
+        '-i', '--indent', type=indent_int, default=default_indent,
         help=(
             'The number of spaces to use for indenting the output (only used '
             'in combination with the option -p --pretty). '
-            'The lowest possible value is 0.'))
+            'Only values which are greater than or equal to 0 will take effect'
+            ' (because negative indentations do not make any sense).'))
     # this option must be here because it's warm and cuddly :-)
     parser.add_argument(
         '-o', '--outputfile', help='write the output to the file')
