@@ -10,6 +10,7 @@ setup(
     url='http://pypi.python.org/pypi/roundy',
     license='WTFPL',
     py_modules=['roundy'],
+    scripts=['roundy.py'],
     install_requires = ['aml'],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
