@@ -1,0 +1,2 @@
+DOCTYPES (attribute "doctype")
+allow SVG, XML, and HTML output
