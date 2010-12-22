@@ -15,7 +15,11 @@ from functools import partial
 
 from aml import (Node, parse_string as parse_aml_string,
     parse_file as parse_aml_file)
-from genshi.output import DocType
+try:
+    from genshi.output import DocType
+except ImportError:
+    # use a local version if Genshi is not installed
+    from genshi_util import DocType
 
 STANDALONE_TAGS = frozenset((
     'AREA',

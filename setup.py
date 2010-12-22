@@ -11,7 +11,7 @@ setup(
     license='WTFPL',
     py_modules=['roundy'],
     scripts=['roundy.py'],
-    install_requires = ['aml', 'genshi'],
+    install_requires = ['aml'],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
