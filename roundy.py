@@ -39,14 +39,7 @@ class HTMLNode(Node):
         self.text_attr = text_attr
 
     def __str__(self):
-        str_children = ' '.join(map(str, self.children))
-        output = ''.join(
-            [self.start_tag, self.text, str_children, self.end_tag])
-        if self.get_attr('doctype'):
-            first_line, second_line = get_doctype(self['doctype'])
-            output = '{}\n{}{}'.format(
-                first_line, second_line and '\n', output)
-        return output
+        return ''.join(map(unicode.lstrip, pprint(self)))
 
     @property
     def is_standalone_tag(self):
@@ -84,18 +77,18 @@ class HTMLNode(Node):
 
 
 def get_doctype(name):
-    prefix = '<!DOCTYPE'
-    html = 'HTML' if name.upper().startswith('HTML') else 'html'
-    suffix = '>'
+    prefix = u'<!DOCTYPE'
+    html = u'HTML' if name.upper().startswith(u'HTML') else u'html'
+    suffix = u'>'
     returned_tuple = DocType.get(name)
     if returned_tuple is None:
         return None
     name, pubid, sysid = returned_tuple
     if not (pubid or sysid):
-        return '{} {}{}'.format(prefix, html, suffix), ''
+        return u'{} {}{}'.format(prefix, html, suffix), u''
     else:
-        first_line = '{} {} "{}"'.format(prefix, html, pubid)
-        second_line = '"{}"{}'.format(sysid, suffix)
+        first_line = u'{} {} "{}"'.format(prefix, html, pubid)
+        second_line = u'"{}"{}'.format(sysid, suffix)
         return first_line, second_line
 
 def parse_string(src, text_attribute='text'):
@@ -134,11 +127,22 @@ def guess_token_type(token):
 
 
 def pprint(node, indent=4):
+    # first thing to do: yield a doctype (splitted up into two lines) if the
+    # root node has the attribute "doctype"
+    if node.get_attr('doctype'):
+        first_line, second_line = get_doctype(node['doctype'])
+        yield first_line
+        if second_line:
+            # empty in HTML5
+            yield second_line
+        # remove this attribute because it was only used as a helper to
+        # describe the doctype
+        del node['doctype']
     depth = 0
     tokens, copy_of_tokens = itertools.tee(tokenize(node))
     copy_of_tokens = list(copy_of_tokens)
     for line, token in enumerate(tokens):
-        base_indentation = ' ' * indent
+        base_indentation = u' ' * indent
         indentation = base_indentation * depth
         tok_type = guess_token_type(token)
         assert tok_type in ('start', 'text', 'standalone', 'end')
