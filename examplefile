@@ -1,4 +1,5 @@
 (html
+    (doctype "html5")
     (body
         (h1
             (class "headline")
