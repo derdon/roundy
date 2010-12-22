@@ -15,6 +15,7 @@ from functools import partial
 
 from aml import (Node, parse_string as parse_aml_string,
     parse_file as parse_aml_file)
+from genshi.output import DocType
 
 STANDALONE_TAGS = frozenset((
     'AREA',
@@ -39,7 +40,13 @@ class HTMLNode(Node):
 
     def __str__(self):
         str_children = ' '.join(map(str, self.children))
-        return ''.join([self.start_tag, self.text, str_children, self.end_tag])
+        output = ''.join(
+            [self.start_tag, self.text, str_children, self.end_tag])
+        if self.get_attr('doctype'):
+            first_line, second_line = get_doctype(self['doctype'])
+            output = '{}\n{}{}'.format(
+                first_line, second_line and '\n', output)
+        return output
 
     @property
     def is_standalone_tag(self):
@@ -75,6 +82,21 @@ class HTMLNode(Node):
         else:
             return '</{}>'.format(self.name)
 
+
+def get_doctype(name):
+    prefix = '<!DOCTYPE'
+    html = 'HTML' if name.upper().startswith('HTML') else 'html'
+    suffix = '>'
+    returned_tuple = DocType.get(name)
+    if returned_tuple is None:
+        return None
+    name, pubid, sysid = returned_tuple
+    if not (pubid or sysid):
+        return '{} {}{}'.format(prefix, html, suffix), ''
+    else:
+        first_line = '{} {} "{}"'.format(prefix, html, pubid)
+        second_line = '"{}"{}'.format(sysid, suffix)
+        return first_line, second_line
 
 def parse_string(src, text_attribute='text'):
     return parse_aml_string(src, partial(HTMLNode, text_attr=text_attribute))
