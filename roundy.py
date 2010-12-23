@@ -215,17 +215,17 @@ def main(argv=None, stdin=sys.stdin):
     args = parse_args(argv)
     if args.filename:
         nodes = parse_file(args.filename, args.text_attribute)
-        if args.pretty:
-            output = '\n'.join(pprint(nodes, args.indent))
-        else:
-            output = nodes
-        if args.outputfile:
-            with open(args.outputfile, 'w') as f:
-                f.write(str(output))
-        else:
-            return output
     else:
-        return parse_string(stdin.read(), args.text_attribute)
+        nodes = parse_string(stdin.read(), args.text_attribute)
+    if args.pretty:
+        output = '\n'.join(pprint(nodes, args.indent))
+    else:
+        output = nodes
+    if args.outputfile:
+        with open(args.outputfile, 'w') as f:
+            f.write(str(output))
+    else:
+        return output
 
 if __name__ == '__main__':
     print(main() or '', end='')
