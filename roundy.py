@@ -237,7 +237,8 @@ def parse_args(argv):
             ' (because negative indentations do not make any sense).'))
     # this option must be here because it's warm and cuddly :-)
     parser.add_argument(
-        '-o', '--outputfile', help='write the output to the file')
+        '-o', '--outputfile', type=filename,
+        help='write the output to the file')
     return parser.parse_args(argv)
 
 
