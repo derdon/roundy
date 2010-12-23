@@ -11,6 +11,7 @@ if sys.version_info.major == 2 and sys.version_info.minor >= 6:
 import cgi
 import argparse
 import itertools
+from os import path
 from functools import partial
 
 from aml import (Node, parse_string as parse_aml_string,
@@ -204,12 +205,23 @@ def parse_args(argv):
         if value < 0:
             value = default_indent
         return value
+
+    def filename(string):
+        value = path.abspath(path.expanduser(string))
+        if not path.exists(value):
+            raise argparse.ArgumentTypeError(
+                'the path {} does not exist'.format(value))
+        if not path.isfile(value):
+            raise argparse.ArgumentTypeError(
+                'the path {} is not a file'.format(value))
+        return value
     parser = argparse.ArgumentParser(
         description=(
             'Convert a lisp-like file into HTML and '
             'print its output to STDOUT by default.'))
     parser.add_argument(
-        '-f', '--filename', help='path to the file which has to be parsed.')
+        '-f', '--filename', type=filename,
+        help='path to the file which has to be parsed.')
     parser.add_argument(
         '-t', '--text-attribute', default='text',
         help='the name of the attribute to use for marking text')
