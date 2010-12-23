@@ -21,6 +21,17 @@ except ImportError:
     # use a local version if Genshi is not installed
     from genshi_util import DocType
 
+VALID_DOCTYPE_VALUES = frozenset([
+    '"html" or "html-strict"',
+    '"html-transitional"',
+    '"html-frameset"',
+    '"html5"',
+    '"xhtml" or "xhtml-strict"',
+    '"xhtml-transitional"',
+    '"xhtml-frameset"',
+    '"xhtml11"'
+])
+
 STANDALONE_TAGS = frozenset((
     'AREA',
     'BASE',
@@ -81,8 +92,16 @@ class HTMLNode(Node):
 
 
 def get_doctype(name):
+    capitalized_name = name.upper()
+    if capitalized_name.startswith(u'HTML'):
+        html = u'HTML'
+    elif capitalized_name.startswith(u'XHTML'):
+        html = u'html'
+    else:
+        raise ValueError(
+            'invalid doctype: only the following values are supported:'
+            '\n- {}'.format('\n- '.join(VALID_DOCTYPE_VALUES)))
     prefix = u'<!DOCTYPE'
-    html = u'HTML' if name.upper().startswith(u'HTML') else u'html'
     suffix = u'>'
     returned_tuple = DocType.get(name)
     if returned_tuple is None:
@@ -218,7 +237,15 @@ def main(argv=None, stdin=sys.stdin):
     else:
         nodes = parse_string(stdin.read(), args.text_attribute)
     if args.pretty:
-        output = '\n'.join(pprint(nodes, args.indent))
+        try:
+            output = '\n'.join(pprint(nodes, args.indent))
+        except ValueError as e:
+            errmsg = 'Error: {}'.format(e)
+            # prepend a newline before the error message if no filename was
+            # given to distinguish it from the input
+            if not args.filename:
+                errmsg = '\n' + errmsg
+            return errmsg
     else:
         output = nodes
     if args.outputfile:
