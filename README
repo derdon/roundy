@@ -1,3 +1,15 @@
+Roundy is a markup language which is inspired by LISP and produces XHTML
+output. It is planned to support HTML output as well.
+
+Features:
+- no redundancy (no double definitions of tags (start and end of the tag))
+- pretty printing; configurable indentation
+- handles standalone tags (tags with no "content" between the start and end
+  tag) correctly
+- add a doctype by assigning the attribute "doctype" to the root element
+  (which is usually the html tag)
+- insert text by assigning a user-configurable attribute (default: "text")
+
 NOTE: the content of the file genshi_util.py shows an excerpt of the file
 genshi/output.py (copied from version 0.6). Genshi is licensed under the
 revised BSD license. See the file GENSHI_LICENSE in this directory for more
