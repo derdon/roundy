@@ -114,6 +114,7 @@ def get_doctype(name):
         second_line = u'"{}"{}'.format(sysid, suffix)
         return first_line, second_line
 
+
 def parse_string(src, text_attribute='text'):
     return parse_aml_string(src, partial(HTMLNode, text_attr=text_attribute))
 
