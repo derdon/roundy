@@ -206,7 +206,7 @@ def parse_args(argv):
         return value
     parser = argparse.ArgumentParser(
         description=(
-            'Convert a lisp-like file into HTML and'
+            'Convert a lisp-like file into HTML and '
             'print its output to STDOUT by default.'))
     parser.add_argument(
         '-f', '--filename', help='path to the file which has to be parsed.')
