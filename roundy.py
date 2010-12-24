@@ -84,10 +84,12 @@ class HTMLNode(Node):
         else:
             return '<{}{}>'.format(self.name, self.formatted_attributes)
 
-    @property
-    def end_tag(self):
+    def format_end_tag(self, is_xhtml=False):
         if self.is_standalone_tag:
-            return '<{}{} />'.format(self.name, self.formatted_attributes)
+            if is_xhtml:
+                return '<{}{} />'.format(self.name, self.formatted_attributes)
+            else:
+                return '<{}{}>'.format(self.name, self.formatted_attributes)
         else:
             return '</{}>'.format(self.name)
 
@@ -126,7 +128,7 @@ def parse_file(filename, text_attribute='text'):
         NodeClass=partial(HTMLNode, text_attr=text_attribute))
 
 
-def tokenize(nodes):
+def tokenize(nodes, is_xhtml=False):
     if nodes.start_tag:
         yield nodes.start_tag
     for node in nodes:
@@ -134,7 +136,7 @@ def tokenize(nodes):
             yield n
     if nodes.text:
         yield nodes.text
-    yield nodes.end_tag
+    yield nodes.format_end_tag(is_xhtml)
 
 
 def guess_token_type(token):
@@ -152,10 +154,14 @@ def guess_token_type(token):
 
 
 def pprint(node, indent=4):
+    is_xhtml = False
     # first thing to do: yield a doctype (splitted up into two lines) if the
     # root node has the attribute "doctype"
     if node.get_attr('doctype'):
-        first_line, second_line = get_doctype(node['doctype'])
+        shorthand = node['doctype']
+        if shorthand.lower().startswith('xhtml'):
+            is_xhtml = True
+        first_line, second_line = get_doctype(shorthand)
         yield first_line
         if second_line:
             # empty in HTML5
@@ -164,7 +170,7 @@ def pprint(node, indent=4):
         # describe the doctype
         del node['doctype']
     depth = 0
-    tokens, copy_of_tokens = itertools.tee(tokenize(node))
+    tokens, copy_of_tokens = itertools.tee(tokenize(node, is_xhtml))
     copy_of_tokens = list(copy_of_tokens)
     for line, token in enumerate(tokens):
         base_indentation = u' ' * indent
@@ -194,7 +200,7 @@ def pprint(node, indent=4):
                 depth -= 1
             yield indentation + token
     # depth should be 0 again, as before the iteration
-    assert depth == 0
+    #assert depth == 0
 
 
 def parse_args(argv):
