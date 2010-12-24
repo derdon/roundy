@@ -238,7 +238,7 @@ def parse_args(argv):
     # this option must be here because it's warm and cuddly :-)
     parser.add_argument(
         '-o', '--outputfile', type=filename,
-        help='write the output to the file')
+        help='write the output to the file OUTPUTFILE instead of STDOUT')
     return parser.parse_args(argv)
 
 
