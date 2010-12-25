@@ -104,14 +104,14 @@ def get_doctype(name):
         raise ValueError(
             'invalid doctype: only the following values are supported:'
             '\n- {}'.format('\n- '.join(VALID_DOCTYPE_VALUES)))
-    prefix = u'<!DOCTYPE'
+    prefix = u'<!DOCTYPE '
     suffix = u'>'
     returned_tuple = DocType.get(name)
     if returned_tuple is None:
         return None
     name, pubid, sysid = returned_tuple
     if not (pubid or sysid):
-        return u'{} {}{}'.format(prefix, html, suffix), u''
+        return u''.join((prefix, html, suffix)), u''
     else:
         first_line = u'{} {} "{}"'.format(prefix, html, pubid)
         second_line = u'"{}"{}'.format(sysid, suffix)
