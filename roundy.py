@@ -139,14 +139,30 @@ def tokenize(nodes, is_xhtml=False):
     yield nodes.format_end_tag(is_xhtml)
 
 
-def guess_token_type(token):
+def token2tag_name(token):
+    '''
+    >>> token2tag_name('<img src="tree.jpg" alt="A photo of a tree">')
+    >>> 'img'
+    >>> token2tag_name('<H1>')
+    >>> 'H1'
+    '''
+    return token.lstrip('<').rstrip('>').split(None, 1)[0]
+
+
+def guess_token_type(token, is_xhtml=False):
+    is_standalone = token2tag_name(token).upper() in STANDALONE_TAGS
     if token.startswith('<'):
         if token.startswith('</') and token.endswith('>'):
             return 'end'
-        elif token.endswith('/>'):
+        elif token.endswith('/>') and is_xhtml and is_standalone:
             return 'standalone'
         elif token.endswith('>'):
-            return 'start'
+            # looks like a start tag, but is a standalone tag if HTML is used
+            # and the tag is in STANDALONE_TAGS
+            if not is_xhtml and is_standalone:
+                return 'standalone'
+            else:
+                return 'start'
         else:
             raise SyntaxError
     else:
