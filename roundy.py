@@ -54,8 +54,11 @@ class HTMLNode(Node):
         Node.__init__(self, name, attributes, children)
         self.text_attr = text_attr
 
+    def __unicode__(self):
+        return u''.join(map(unicode.lstrip, pprint(self)))
+
     def __str__(self):
-        return ''.join(map(unicode.lstrip, pprint(self)))
+        return ''.join(map(str.lstrip, pprint(self)))
 
     @property
     def is_standalone_tag(self):
@@ -64,8 +67,8 @@ class HTMLNode(Node):
     @property
     def formatted_attributes(self):
         attrs = list(self.attributes.items())
-        formatted_attributes = ' '.join(
-            '{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
+        formatted_attributes = u' '.join(
+            u'{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
         if formatted_attributes:
             formatted_attributes = ' ' + formatted_attributes
         return formatted_attributes
@@ -75,30 +78,30 @@ class HTMLNode(Node):
         attributes = list(self.attributes.items())
         texts = [v for k, v in attributes if k == self.text_attr]
         assert len(texts) in (0, 1)
-        return cgi.escape(texts[0]) if texts else ''
+        return cgi.escape(texts[0]) if texts else u''
 
     @property
     def start_tag(self):
         if self.is_standalone_tag:
-            return ''
+            return u''
         else:
-            return '<{}{}>'.format(self.name, self.formatted_attributes)
+            return u'<{}{}>'.format(self.name, self.formatted_attributes)
 
     def format_end_tag(self, is_xhtml=False):
         if self.is_standalone_tag:
             if is_xhtml:
-                return '<{}{} />'.format(self.name, self.formatted_attributes)
+                return u'<{}{} />'.format(self.name, self.formatted_attributes)
             else:
-                return '<{}{}>'.format(self.name, self.formatted_attributes)
+                return u'<{}{}>'.format(self.name, self.formatted_attributes)
         else:
-            return '</{}>'.format(self.name)
+            return u'</{}>'.format(self.name)
 
 
 def get_doctype(name):
     capitalized_name = name.upper()
-    if capitalized_name.startswith(u'HTML'):
+    if capitalized_name.startswith('HTML'):
         html = u'HTML'
-    elif capitalized_name.startswith(u'XHTML'):
+    elif capitalized_name.startswith('XHTML'):
         html = u'html'
     else:
         raise ValueError(
