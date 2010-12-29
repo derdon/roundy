@@ -16,7 +16,7 @@ def pytest_generate_tests(metafunc):
         metafunc.addcall(funcargs=funcargs)
 
 
-class TestClass:
+class TestClass(object):
     # a map specifying multiple argument sets for a test method
     params = {
         'test_indent_basic': [
