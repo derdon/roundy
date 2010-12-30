@@ -67,8 +67,8 @@ class HTMLNode(Node):
     @property
     def formatted_attributes(self):
         attrs = list(self.attributes.items())
-        formatted_attributes = u' '.join(
-            u'{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
+        formatted_attributes = ' '.join(
+            '{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
         if formatted_attributes:
             formatted_attributes = ' ' + formatted_attributes
         return formatted_attributes
@@ -78,46 +78,46 @@ class HTMLNode(Node):
         attributes = list(self.attributes.items())
         texts = [v for k, v in attributes if k == self.text_attr]
         assert len(texts) in (0, 1)
-        return cgi.escape(texts[0]) if texts else u''
+        return cgi.escape(texts[0]) if texts else ''
 
     @property
     def start_tag(self):
         if self.is_standalone_tag:
-            return u''
+            return ''
         else:
-            return u'<{}{}>'.format(self.name, self.formatted_attributes)
+            return '<{}{}>'.format(self.name, self.formatted_attributes)
 
     def format_end_tag(self, is_xhtml=False):
         if self.is_standalone_tag:
             if is_xhtml:
-                return u'<{}{} />'.format(self.name, self.formatted_attributes)
+                return '<{}{} />'.format(self.name, self.formatted_attributes)
             else:
-                return u'<{}{}>'.format(self.name, self.formatted_attributes)
+                return '<{}{}>'.format(self.name, self.formatted_attributes)
         else:
-            return u'</{}>'.format(self.name)
+            return '</{}>'.format(self.name)
 
 
 def get_doctype(name):
     capitalized_name = name.upper()
     if capitalized_name.startswith('HTML'):
-        html = u'HTML'
+        html = 'HTML'
     elif capitalized_name.startswith('XHTML'):
-        html = u'html'
+        html = 'html'
     else:
         raise ValueError(
             'invalid doctype: only the following values are supported:'
             '\n- {}'.format('\n- '.join(VALID_DOCTYPE_VALUES)))
-    prefix = u'<!DOCTYPE '
-    suffix = u'>'
+    prefix = '<!DOCTYPE '
+    suffix = '>'
     returned_tuple = DocType.get(name)
     if returned_tuple is None:
         return None
     name, pubid, sysid = returned_tuple
     if not (pubid or sysid):
-        return u''.join((prefix, html, suffix)), u''
+        return ''.join((prefix, html, suffix)), ''
     else:
-        first_line = u'{} {} "{}"'.format(prefix, html, pubid)
-        second_line = u'"{}"{}'.format(sysid, suffix)
+        first_line = '{} {} "{}"'.format(prefix, html, pubid)
+        second_line = '"{}"{}'.format(sysid, suffix)
         return first_line, second_line
 
 
@@ -192,7 +192,7 @@ def pprint(node, indent=4):
     tokens, copy_of_tokens = itertools.tee(tokenize(node, is_xhtml))
     copy_of_tokens = list(copy_of_tokens)
     for line, token in enumerate(tokens):
-        base_indentation = u' ' * indent
+        base_indentation = ' ' * indent
         indentation = base_indentation * depth
         tok_type = guess_token_type(token)
         assert tok_type in ('start', 'text', 'standalone', 'end')

@@ -43,15 +43,15 @@ class TestClass(object):
         with pytest.raises(SystemExit):
             parse_args(argv)
         out, err = capsys.readouterr()
-        assert out == u''
-        assert err.strip().endswith(u'does not exist')
+        assert out == ''
+        assert err.strip().endswith('does not exist')
 
     def test_filename_with_directory(self, option, tmpdir, capsys):
         with pytest.raises(SystemExit):
             parse_args([option, str(tmpdir)])
         out, err = capsys.readouterr()
-        assert out == u''
-        assert err.strip().endswith(u'is not a file')
+        assert out == ''
+        assert err.strip().endswith('is not a file')
 
     def test_indent_basic(self, argv):
         args = parse_args(argv)
