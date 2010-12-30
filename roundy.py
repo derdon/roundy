@@ -55,10 +55,7 @@ class HTMLNode(Node):
         self.text_attr = text_attr
 
     def __unicode__(self):
-        return u''.join(map(unicode.lstrip, pprint(self)))
-
-    def __str__(self):
-        return ''.join(map(str.lstrip, pprint(self)))
+        return ''.join(map(unicode.lstrip, pprint(self)))
 
     @property
     def is_standalone_tag(self):
@@ -289,9 +286,9 @@ def main(argv=None, stdin=sys.stdin):
         output = nodes
     if args.outputfile:
         with open(args.outputfile, 'w') as f:
-            f.write(str(output))
+            f.write(unicode(output).encode('utf-8'))
     else:
         return output
 
 if __name__ == '__main__':
-    print(main() or '', end='')
+    print(main().encode('utf-8') or '', end='')
