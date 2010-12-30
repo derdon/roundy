@@ -1,4 +1,12 @@
+from sys import version_info as py_version
+
 from setuptools import setup
+
+requirements = ['aml']
+
+is_py31 = (py_version.major, py_version.minor) == (3, 1)
+if is_py31:
+    requirements += ['argparse']
 
 setup(
     name='roundy',
@@ -11,7 +19,7 @@ setup(
     license='WTFPL',
     py_modules=['roundy'],
     scripts=['roundy.py'],
-    install_requires = ['aml'],
+    install_requires=requirements,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
