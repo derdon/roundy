@@ -2,6 +2,14 @@ from sys import version_info as py_version
 
 from setuptools import setup
 
+# copied and only slightly modified from
+# http://lucumr.pocoo.org/2010/2/11/porting-to-python-3-a-guide/
+extra = {}
+if py_version.major == 3:
+    extra.update(
+        use_2to3=True,
+        use_2to3_fixers=['custom_fixers'])
+
 requirements = ['aml']
 
 is_py31 = (py_version.major, py_version.minor) == (3, 1)
@@ -30,4 +38,5 @@ setup(
         'Programming Language :: Python :: 3.1',
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Markup'],
+    **extra
 )

@@ -10,7 +10,14 @@ Features:
   (which is usually the html tag)
 - insert text by assigning a user-configurable attribute (default: "text")
 
-NOTE: the content of the file genshi_util.py shows an excerpt of the file
-genshi/output.py (copied from version 0.6). Genshi is licensed under the
-revised BSD license. See the file GENSHI_LICENSE in this directory for more
-information.
+Licenses:
+roundy is licensed under the WTFPL (http://sam.zoy.org/wtfpl/).
+
+genshi_util.py:
+The content of this file shows an excerpt of the file genshi/output.py (copied
+from version 0.6). Genshi is licensed under the revised BSD license. See the
+file GENSHI_LICENSE in this directory for more information.
+
+custom_fixers/fix_alt_unicode.py
+This file has been copied from the Sphinx project which is published under the
+BSD license. See SPHINX_LICENSE in this directory for more information.
