@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import sys
 # this import is only senseful for python version 2.x and is only supported
