@@ -10,7 +10,7 @@ if py_version.major == 3:
         use_2to3=True,
         use_2to3_fixers=['custom_fixers'])
 
-requirements = ['aml']
+requirements = ['aml', 'distribute']
 
 is_py31 = (py_version.major, py_version.minor) == (3, 1)
 if is_py31:
