@@ -1,0 +1,3 @@
+include MANIFEST.in README COPYING GENSHI_LICENSE SPHINX_LICENSE
+recursive-include custom_fixers *
+recursive-include test *
