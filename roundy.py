@@ -291,4 +291,4 @@ def main(argv=None, stdin=sys.stdin):
         return output
 
 if __name__ == '__main__':
-    print(main().encode('utf-8') or '', end='')
+    print(unicode(main()).encode('utf-8') or '', end='')
