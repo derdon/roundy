@@ -146,7 +146,7 @@ def token2tag_name(token):
     >>> token2tag_name('<H1>')
     >>> 'H1'
     '''
-    return token.lstrip('<').rstrip('>').split(None, 1)[0]
+    return token.lstrip('</').rstrip('>').split(None, 1)[0]
 
 
 def guess_token_type(token, is_xhtml=False):
