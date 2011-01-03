@@ -1,18 +1,20 @@
-from sys import version_info as py_version
+import sys
 
 from setuptools import setup
 
 # copied and only slightly modified from
 # http://lucumr.pocoo.org/2010/2/11/porting-to-python-3-a-guide/
 extra = {}
-if py_version.major == 3:
+major_python_version = sys.version_info[0]
+minor_python_version = sys.version_info[1]
+if major_python_version == 3:
     extra.update(
         use_2to3=True,
         use_2to3_fixers=['custom_fixers'])
 
 requirements = ['aml', 'distribute']
 
-is_py31 = (py_version.major, py_version.minor) == (3, 1)
+is_py31 = (major_python_version, minor_python_version) == (3, 1)
 if is_py31:
     requirements += ['argparse']
 
