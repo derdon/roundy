@@ -6,10 +6,10 @@
         (h1
             (class "headline")
             (text "the header"))
-	(img
-	    (src "images/icon.gif")
-	    (alt "an icon which you can't see!"))
-	(p
-	    (text "Here is some text with < and > and />."))
-	(p
-	    (id "foo"))))
+        (img
+            (src "images/icon.gif")
+            (alt "an icon which you can't see!"))
+        (p
+            (text "Here is some text with < and > and />."))
+        (p
+            (id "foo"))))
