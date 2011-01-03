@@ -128,15 +128,25 @@ def parse_file(filename, text_attribute='text'):
         NodeClass=partial(HTMLNode, text_attr=text_attribute))
 
 
-def tokenize(nodes, is_xhtml=False):
-    if nodes.start_tag:
-        yield nodes.start_tag
-    for node in nodes:
-        for n in tokenize(node):
-            yield n
-    if nodes.text:
-        yield nodes.text
-    yield nodes.format_end_tag(is_xhtml)
+def flatten_node(node):
+    for child in node:
+        if child.children:
+            for subchild in flatten_node(child):
+                yield subchild
+        else:
+            yield child
+
+
+def tokenize(node, is_xhtml=False):
+    if node.start_tag:
+        yield node.start_tag
+    flattened_node = flatten_node(node)
+    for node in flattened_node:
+        if node.start_tag:
+            yield node.start_tag
+        if node.text:
+            yield node.text
+        yield node.format_end_tag(is_xhtml)
 
 
 def token2tag_name(token):
