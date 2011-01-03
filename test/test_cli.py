@@ -8,6 +8,8 @@ from roundy import parse_args
 
 import pytest
 
+skip_py26 = pytest.mark.skipif('sys.version_info == (2, 6)')
+
 
 def pytest_generate_tests(metafunc):
     # called once per each test function
@@ -39,6 +41,7 @@ class TestClass(object):
         assert args.indent == 2
         assert args.outputfile is None
 
+    @skip_py26
     def test_nonexistent_filename(self, argv, capsys):
         with pytest.raises(SystemExit):
             parse_args(argv)
@@ -46,6 +49,7 @@ class TestClass(object):
         assert out == ''
         assert err.strip().endswith('does not exist')
 
+    @skip_py26
     def test_filename_with_directory(self, option, tmpdir, capsys):
         with pytest.raises(SystemExit):
             parse_args([option, str(tmpdir)])
