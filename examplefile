@@ -1,5 +1,7 @@
 (html
     (doctype "html5")
+    (head
+        (title "The title of this example roundy document"))
     (body
         (h1
             (class "headline")
