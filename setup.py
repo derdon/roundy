@@ -2,20 +2,22 @@ import sys
 
 from setuptools import setup
 
-# copied and only slightly modified from
+if sys.version_info < (2, 6):
+    sys.exit(
+        "Fatal Error: couldn't install roundy. Reason: Python version is too "
+        "low (Python2.6 or higher is required)")
+
+# copied from
 # http://lucumr.pocoo.org/2010/2/11/porting-to-python-3-a-guide/
 extra = {}
-major_python_version = sys.version_info[0]
-minor_python_version = sys.version_info[1]
-if major_python_version == 3:
+if sys.version_info >= (3, 0):
     extra.update(
         use_2to3=True,
         use_2to3_fixers=['custom_fixers'])
 
 requirements = ['aml', 'distribute']
-
-is_py31 = (major_python_version, minor_python_version) == (3, 1)
-if is_py31:
+needs_argparse = sys.version_info[:2] == (2, 6) or (3, 1)
+if needs_argparse:
     requirements += ['argparse']
 
 setup(
