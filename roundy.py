@@ -93,6 +93,14 @@ class HTMLNode(Node):
         else:
             return '</{}>'.format(self.name)
 
+    def flatten(self):
+        for child in self:
+            if child.children:
+                for subchild in self.flatten(child):
+                    yield subchild
+            else:
+                yield child
+
 
 def get_doctype(name):
     capitalized_name = name.upper()
@@ -128,20 +136,10 @@ def parse_file(filename, text_attribute='text'):
         NodeClass=partial(HTMLNode, text_attr=text_attribute))
 
 
-def flatten_node(node):
-    for child in node:
-        if child.children:
-            for subchild in flatten_node(child):
-                yield subchild
-        else:
-            yield child
-
-
 def tokenize(node, is_xhtml=False):
     if node.start_tag:
         yield node.start_tag
-    flattened_node = flatten_node(node)
-    for node in flattened_node:
+    for node in node.flatten():
         if node.start_tag:
             yield node.start_tag
         if node.text:
