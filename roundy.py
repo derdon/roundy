@@ -139,12 +139,12 @@ def parse_file(filename, text_attribute='text'):
 def tokenize(node, is_xhtml=False):
     if node.start_tag:
         yield node.start_tag
-    for node in node.flatten():
-        if node.start_tag:
-            yield node.start_tag
-        if node.text:
-            yield node.text
-        yield node.format_end_tag(is_xhtml)
+    for n in node.flatten():
+        if n.start_tag:
+            yield n.start_tag
+        if n.text:
+            yield n.text
+        yield n.format_end_tag(is_xhtml)
 
 
 def token2tag_name(token):
