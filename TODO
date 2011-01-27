@@ -1,0 +1,6 @@
+- check in the setup.py if the python version is supported and exit if it's not
+- check tags with the name HTMLNode.text_attr
+- use optparse instead of argparse for compatibility reasons!
+- support py25, py26 and pypy
+- use a package with the modules lexer, parser, printer and cli instead of a
+single module
