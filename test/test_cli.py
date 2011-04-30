@@ -8,7 +8,7 @@ from roundy import parse_args
 
 import pytest
 
-skip_py26 = pytest.mark.skipif('sys.version_info == (2, 6)')
+skip_py26 = pytest.mark.skipif('sys.version_info[:2] == (2, 6)')
 
 
 def pytest_generate_tests(metafunc):
