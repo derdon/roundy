@@ -29,7 +29,7 @@ setup(
     author_email='liedtke.simon@googlemail.com',
     url='http://pypi.python.org/pypi/roundy',
     license='WTFPL',
-    py_modules=['roundy'],
+    packages=['roundy'],
     scripts=['roundy.py'],
     install_requires=requirements,
     classifiers=[
