@@ -65,7 +65,7 @@ class HTMLNode(Node):
     def formatted_attributes(self):
         attrs = list(self.attributes.items())
         formatted_attributes = ' '.join(
-            '{}="{}"'.format(k, v) for k, v in attrs if k != self.text_attr)
+            '%s="%s"' % (k, v) for k, v in attrs if k != self.text_attr)
         if formatted_attributes:
             formatted_attributes = ' ' + formatted_attributes
         return formatted_attributes
@@ -82,16 +82,16 @@ class HTMLNode(Node):
         if self.is_standalone_tag:
             return ''
         else:
-            return '<{}{}>'.format(self.name, self.formatted_attributes)
+            return '<%s%s>' % (self.name, self.formatted_attributes)
 
     def format_end_tag(self, is_xhtml=False):
         if self.is_standalone_tag:
             if is_xhtml:
-                return '<{}{} />'.format(self.name, self.formatted_attributes)
+                return '<%s%s />' % (self.name, self.formatted_attributes)
             else:
-                return '<{}{}>'.format(self.name, self.formatted_attributes)
+                return '<%s%s>' % (self.name, self.formatted_attributes)
         else:
-            return '</{}>'.format(self.name)
+            return '</%s>' % self.name
 
     def flatten(self):
         for child in self:
@@ -111,7 +111,7 @@ def get_doctype(name):
     else:
         raise ValueError(
             'invalid doctype: only the following values are supported:'
-            '\n- {}'.format('\n- '.join(VALID_DOCTYPE_VALUES)))
+            ' %s' % (', '.join(VALID_DOCTYPE_VALUES)))
     prefix = '<!DOCTYPE '
     suffix = '>'
     returned_tuple = DocType.get(name)
@@ -121,8 +121,8 @@ def get_doctype(name):
     if not (pubid or sysid):
         return ''.join((prefix, html, suffix)), ''
     else:
-        first_line = '{} {} "{}"'.format(prefix, html, pubid)
-        second_line = '"{}"{}'.format(sysid, suffix)
+        first_line = '%s %s "%s"' % (prefix, html, pubid)
+        second_line = '"%s"%s' % (sysid, suffix)
         return first_line, second_line
 
 
@@ -240,10 +240,10 @@ def parse_args(argv):
         value = path.abspath(path.expanduser(string))
         if not path.exists(value):
             raise argparse.ArgumentTypeError(
-                'the path {} does not exist'.format(value))
+                'the path %s does not exist' % value)
         if not path.isfile(value):
             raise argparse.ArgumentTypeError(
-                'the path {} is not a file'.format(value))
+                'the path %s is not a file' % value)
         return value
     parser = argparse.ArgumentParser(
         description=(
@@ -284,7 +284,7 @@ def main(argv=None, stdin=sys.stdin):
         try:
             output = '\n'.join(pprint(nodes, args.indent))
         except ValueError as e:
-            errmsg = 'Error: {}'.format(e)
+            errmsg = 'Error: %s' % e
             # prepend a newline before the error message if no filename was
             # given to distinguish it from the input
             if not args.filename:
