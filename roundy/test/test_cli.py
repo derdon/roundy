@@ -1,10 +1,6 @@
 from __future__ import unicode_literals
 
-from os import path
-import sys
-sys.path.insert(0, path.pardir)
-
-from roundy import parse_args
+from roundy.cli import parse_args
 
 import pytest
 

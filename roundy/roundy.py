@@ -9,9 +9,7 @@ if (3, 0) > sys.version_info[:2] >= (2, 6):
     from future_builtins import map
 
 import cgi
-import argparse
 import itertools
-from os import path
 from functools import partial
 
 from aml import (Node, parse_string as parse_aml_string,
@@ -21,6 +19,9 @@ try:
 except ImportError:
     # use a local version if Genshi is not installed
     from genshi_util import DocType
+
+from roundy.cli import parse_args
+
 
 VALID_DOCTYPE_VALUES = frozenset([
     '"html" or "html-strict"',
@@ -225,51 +226,6 @@ def pprint(node, indent=4):
             yield indentation + token
     # depth should be 0 again, as before the iteration
     #assert depth == 0
-
-
-def parse_args(argv):
-    default_indent = 2
-
-    def indent_int(string):
-        value = int(string)
-        if value < 0:
-            value = default_indent
-        return value
-
-    def filename(string):
-        value = path.abspath(path.expanduser(string))
-        if not path.exists(value):
-            raise argparse.ArgumentTypeError(
-                'the path %s does not exist' % value)
-        if not path.isfile(value):
-            raise argparse.ArgumentTypeError(
-                'the path %s is not a file' % value)
-        return value
-    parser = argparse.ArgumentParser(
-        description=(
-            'Convert a lisp-like file into HTML and '
-            'print its output to STDOUT by default.'))
-    parser.add_argument(
-        '-f', '--filename', type=filename,
-        help='path to the file which has to be parsed.')
-    parser.add_argument(
-        '-t', '--text-attribute', default='text',
-        help='the name of the attribute to use for marking text')
-    parser.add_argument(
-        '-p', '--pretty', action='store_true',
-        help='Enable pretty printing of the HTML output')
-    parser.add_argument(
-        '-i', '--indent', type=indent_int, default=default_indent,
-        help=(
-            'The number of spaces to use for indenting the output (only used '
-            'in combination with the option -p --pretty). '
-            'Only values which are greater than or equal to 0 will take effect'
-            ' (because negative indentations do not make any sense).'))
-    # this option must be here because it's warm and cuddly :-)
-    parser.add_argument(
-        '-o', '--outputfile', type=filename,
-        help='write the output to the file OUTPUTFILE instead of STDOUT')
-    return parser.parse_args(argv)
 
 
 def main(argv=None, stdin=sys.stdin):
