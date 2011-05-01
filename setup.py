@@ -22,7 +22,8 @@ if needs_argparse:
 
 setup(
     name='roundy',
-    description='a template language which is inspired by LISP and converts to HTML',
+    description=(
+        'a template language which is inspired by LISP and converts to HTML'),
     long_description='',
     version='0.1a',
     author='Simon Liedtke',
