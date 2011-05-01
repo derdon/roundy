@@ -5,7 +5,7 @@ from __future__ import print_function, unicode_literals
 import sys
 # this import is only senseful for python version 2.x and is only supported
 # since 2.6
-if (3, 0) > sys.version_info[:2] >=  (2, 6):
+if (3, 0) > sys.version_info[:2] >= (2, 6):
     from future_builtins import map
 
 import cgi
