@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 import sys
 
 from roundy.parser import parse_file, parse_string
@@ -16,7 +18,7 @@ def main(argv=None, stdin=sys.stdin):
     if args.pretty:
         try:
             output = '\n'.join(pprint(nodes, args.indent))
-        except ValueError as e:
+        except ValueError, e:
             errmsg = 'Error: %s' % e
             # prepend a newline before the error message if no filename was
             # given to distinguish it from the input
