@@ -20,8 +20,6 @@ except ImportError:
     # use a local version if Genshi is not installed
     from genshi_util import DocType
 
-from roundy.cli import parse_args
-
 
 VALID_DOCTYPE_VALUES = frozenset([
     '"html" or "html-strict"',
@@ -176,80 +174,3 @@ def guess_token_type(token, is_xhtml=False):
             raise SyntaxError
     else:
         return 'text'
-
-
-def pprint(node, indent=4):
-    is_xhtml = False
-    # first thing to do: yield a doctype (splitted up into two lines) if the
-    # root node has the attribute "doctype"
-    if node.get_attr('doctype'):
-        shorthand = node['doctype']
-        if shorthand.lower().startswith('xhtml'):
-            is_xhtml = True
-        first_line, second_line = get_doctype(shorthand)
-        yield first_line
-        if second_line:
-            # empty in HTML5
-            yield second_line
-        # remove this attribute because it was only used as a helper to
-        # describe the doctype
-        del node['doctype']
-    depth = 0
-    tokens, copy_of_tokens = itertools.tee(tokenize(node, is_xhtml))
-    copy_of_tokens = list(copy_of_tokens)
-    for line, token in enumerate(tokens):
-        base_indentation = ' ' * indent
-        indentation = base_indentation * depth
-        tok_type = guess_token_type(token)
-        assert tok_type in ('start', 'text', 'standalone', 'end')
-        try:
-            next_token = copy_of_tokens[line + 1]
-        except IndexError:
-            # this tag is already the last token in the list, so there
-            # is no next token
-            next_token = ''
-        next_tok_type = guess_token_type(next_token)
-        assert next_tok_type in ('start', 'text', 'standalone', 'end')
-        if tok_type == 'start':
-            # only indent if the next line is not an end tag
-            if next_tok_type != 'end':
-                depth += 1
-            yield indentation + token
-        elif tok_type == 'text':
-            depth -= 1
-            yield indentation + token
-        elif tok_type in ('standalone', 'end'):
-            # look at the following token and check if it is an end tag. If it
-            # is, the next line has to be outdented
-            if next_tok_type == 'end':
-                depth -= 1
-            yield indentation + token
-    # depth should be 0 again, as before the iteration
-    #assert depth == 0
-
-
-def main(argv=None, stdin=sys.stdin):
-    if not argv:
-        argv = sys.argv[1:]
-    args = parse_args(argv)
-    if args.filename:
-        nodes = parse_file(args.filename, args.text_attribute)
-    else:
-        nodes = parse_string(stdin.read(), args.text_attribute)
-    if args.pretty:
-        try:
-            output = '\n'.join(pprint(nodes, args.indent))
-        except ValueError as e:
-            errmsg = 'Error: %s' % e
-            # prepend a newline before the error message if no filename was
-            # given to distinguish it from the input
-            if not args.filename:
-                errmsg = '\n' + errmsg
-            return errmsg
-    else:
-        output = nodes
-    if args.outputfile:
-        with open(args.outputfile, 'w') as f:
-            f.write(unicode(output).encode('utf-8'))
-    else:
-        return output
