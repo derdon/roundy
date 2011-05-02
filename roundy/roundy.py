@@ -253,6 +253,3 @@ def main(argv=None, stdin=sys.stdin):
             f.write(unicode(output).encode('utf-8'))
     else:
         return output
-
-if __name__ == '__main__':
-    print(unicode(main()).encode('utf-8') or '', end='')

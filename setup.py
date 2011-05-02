@@ -1,3 +1,4 @@
+from os import path
 import sys
 
 from setuptools import setup
@@ -31,7 +32,7 @@ setup(
     url='http://pypi.python.org/pypi/roundy',
     license='WTFPL',
     packages=['roundy'],
-    scripts=['roundy.py'],
+    scripts=[path.join('scripts', 'roundy.py')],
     install_requires=requirements,
     classifiers=[
         'Development Status :: 3 - Alpha',

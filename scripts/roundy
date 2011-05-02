@@ -1,0 +1,6 @@
+import sys
+
+from roundy import main
+
+
+sys.stdout.write(unicode(main()).encode('utf-8') or '')
