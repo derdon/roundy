@@ -1,6 +1,8 @@
 from os import path
 import sys
 
+from distribute_setup import use_setuptools
+use_setuptools()
 from setuptools import setup
 
 if sys.version_info < (2, 5):
@@ -11,12 +13,12 @@ if sys.version_info < (2, 5):
 # copied from
 # http://lucumr.pocoo.org/2010/2/11/porting-to-python-3-a-guide/
 extra = {}
-if sys.version_info >= (3, 0):
+if sys.version_info >= (3,):
     extra.update(
         use_2to3=True,
         use_2to3_fixers=['custom_fixers'])
 
-requirements = ['distribute', 'aml']
+requirements = ['aml']
 needs_argparse = sys.version_info[:2] in [(2, 5), (2, 6), (3, 0), (3, 1)]
 if needs_argparse:
     requirements += ['argparse']
