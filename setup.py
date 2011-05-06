@@ -32,7 +32,7 @@ setup(
     url='http://pypi.python.org/pypi/roundy',
     license='WTFPL',
     packages=['roundy'],
-    scripts=[path.join('scripts', 'roundy.py')],
+    scripts=[path.join('scripts', 'roundy')],
     install_requires=requirements,
     classifiers=[
         'Development Status :: 3 - Alpha',
