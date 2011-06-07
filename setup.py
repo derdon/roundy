@@ -1,9 +1,10 @@
 from os import path
 import sys
 
-from distribute_setup import use_setuptools
-use_setuptools()
-from setuptools import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 if sys.version_info < (2, 5):
     sys.exit(
