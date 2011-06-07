@@ -34,7 +34,7 @@ setup(
     author_email='liedtke.simon@googlemail.com',
     url='http://pypi.python.org/pypi/roundy',
     license='WTFPL',
-    packages=['roundy'],
+    packages=['roundy', 'roundy.test'],
     scripts=[path.join('scripts', 'roundy')],
     install_requires=requirements,
     classifiers=[
